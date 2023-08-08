@@ -1,19 +1,15 @@
-{ config, lib, pkgs, inputs, ... }:
-{
+{ config, lib, pkgs, inputs, ... }: {
   imports = [
-    ./modules/nnn.nix
+    #./modules/nnn.nix
     ./modules/kitty.nix
   ];
   home = {
-    packages = with pkgs; [
-      zathura
-      pavucontrol
-      wl-mirror
-      vscode
-    ];
+    packages = with pkgs;
+      [
+        zathura
+
+      ];
   };
-
-
 
   xdg.enable = true;
 }

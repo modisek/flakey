@@ -5,7 +5,8 @@ let
   terminal = "${pkgs.kitty}/bin/kitty";
   light = "${pkgs.light}/bin/light";
   wofi = "${pkgs.wofi}/bin/wofi --insensitive";
-  bemenu = "BEMENU_BACKEND=wayland ${pkgs.bemenu}/bin/bemenu-run -H 16 -p execute: -b --fn 'Terminus 9' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
+  bemenu =
+    "BEMENU_BACKEND=wayland ${pkgs.bemenu}/bin/bemenu-run -H 16 -p execute: -b --fn 'Terminus 9' --tf '#FFFFFF' --scf '#FFFFFF' --ff '#FFFFFF' --tb ''#FFFFFF --nf '#FFFFFF' --hf '#FFFFFF' --nb '#000000' --tb '#000000' --fb '#000000'";
   launcher = bemenu;
   pamixer = "${pkgs.pamixer}/bin/pamixer";
   swayfonts = {
@@ -35,9 +36,9 @@ let
       swaymsg "[app_id=dropdown] scratchpad show"
     fi
   '';
-in
-{ config = {
-    home-manager.users.kgosi= { pkgs, ... }: {
+in {
+  config = {
+    home-manager.users.kgosi = { pkgs, ... }: {
       wayland.windowManager.sway = {
         enable = true;
         wrapperFeatures = {
@@ -47,41 +48,87 @@ in
         xwayland = true;
         config = rec {
           inherit terminal;
-#          fonts = swayfonts;
+          #          fonts = swayfonts;
           bars = [{
             fonts = {
               names = [ "Terminus" ];
               size = 12.0;
             };
-            statusCommand = "i3status-rs $HOME/.config/i3status-rust/config.toml";
+            statusCommand =
+              "i3status-rs $HOME/.config/i3status-rust/config.toml";
             extraConfig = "height 20";
           }];
           focus.followMouse = "always";
           window.border = 1;
           window.commands = [
-            { criteria = { app_id = "dropdown"; }; command = "floating enable"; }
-            { criteria = { app_id = "dropdown"; }; command = "resize set 1000 640"; }
-            { criteria = { app_id = "dropdown"; }; command = "move scratchpad"; }
-            { criteria = { app_id = "dropdown"; }; command = "border pixel 1"; }
+            {
+              criteria = { app_id = "dropdown"; };
+              command = "floating enable";
+            }
+            {
+              criteria = { app_id = "dropdown"; };
+              command = "resize set 1000 640";
+            }
+            {
+              criteria = { app_id = "dropdown"; };
+              command = "move scratchpad";
+            }
+            {
+              criteria = { app_id = "dropdown"; };
+              command = "border pixel 1";
+            }
           ];
-          colors.focused = { background = "#4c7899"; border = "#4c7899"; childBorder = "#4c7899"; indicator = "#2e9ef4"; text = "#ffffff"; };
-          input = { "type:touchpad" = { tap = "enabled"; natural_scroll = "enabled"; }; };
+          colors.focused = {
+            background = "#4c7899";
+            border = "#4c7899";
+            childBorder = "#4c7899";
+            indicator = "#2e9ef4";
+            text = "#ffffff";
+          };
+          input = {
+            "type:touchpad" = {
+              tap = "enabled";
+              natural_scroll = "enabled";
+            };
+          };
           startup = [
-            { always = true; command = "${pkgs.systemd}/bin/systemd-notify --ready || true"; }
-            { always = true; command = "${pkgs.mako}/bin/mako --default-timeout 3000"; }
-            { always = true; command = "touch $SWAYSOCK.wob && tail -n0 -f $SWAYSOCK.wob | ${pkgs.wob}/bin/wob"; }
-            { always = true; command = "${pkgs.flashfocus}/bin/flashfocus"; }
-            { command = "exec ${idlecmd}"; always = true; }
+            {
+              always = true;
+              command = "${pkgs.systemd}/bin/systemd-notify --ready || true";
+            }
+            {
+              always = true;
+              command = "${pkgs.mako}/bin/mako --default-timeout 3000";
+            }
+            {
+              always = true;
+              command =
+                "touch $SWAYSOCK.wob && tail -n0 -f $SWAYSOCK.wob | ${pkgs.wob}/bin/wob";
+            }
+            {
+              always = true;
+              command = "${pkgs.flashfocus}/bin/flashfocus";
+            }
+            {
+              command = "exec ${idlecmd}";
+              always = true;
+            }
           ];
           modifier = "Mod4";
           keybindings = {
-            "XF86MonBrightnessUp" = "exec ${light} -A 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
-            "XF86MonBrightnessDown" = "exec ${light} -U 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
-            "XF86AudioRaiseVolume" = "exec ${pamixer} -ui 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
-            "XF86AudioLowerVolume" = "exec ${pamixer} -ud 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
-            "XF86AudioMute" = "exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && echo 0 > $SWAYSOCK.wob ) || ${pamixer} --get-volume > $SWAYSOCK.wob";
+            "XF86MonBrightnessUp" =
+              "exec ${light} -A 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
+            "XF86MonBrightnessDown" =
+              "exec ${light} -U 5 && ${light} -G | cut -d'.' -f1 > $SWAYSOCK.wob";
+            "XF86AudioRaiseVolume" =
+              "exec ${pamixer} -ui 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
+            "XF86AudioLowerVolume" =
+              "exec ${pamixer} -ud 2 && ${pamixer} --get-volume > $SWAYSOCK.wob";
+            "XF86AudioMute" =
+              "exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && echo 0 > $SWAYSOCK.wob ) || ${pamixer} --get-volume > $SWAYSOCK.wob";
 
-            "ctrl+shift+c" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp -d)\" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png";
+            "ctrl+shift+c" = ''
+              exec ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -d)" - | ${pkgs.wl-clipboard}/bin/wl-copy -t image/png'';
 
             "${modifier}+Return" = "exec ${terminal}";
             "${modifier}+c" = "exec ${swaylockcmd}";
