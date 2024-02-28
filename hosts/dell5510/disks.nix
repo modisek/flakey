@@ -1,7 +1,7 @@
 { pkgs, config, ... }:
 {
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.supportedFilesystems = [ "btrfs"];
+  boot.supportedFilesystems = [ "btrfs" "ntfs"];
   hardware.enableAllFirmware = true;
   nixpkgs.config.allowUnfree = true;
 

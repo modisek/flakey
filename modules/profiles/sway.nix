@@ -6,18 +6,26 @@
     services.xserver.displayManager.gdm.enable = true;
     services.xserver.displayManager.autoLogin.enable = false;
     services.xserver.desktopManager.gnome.enable = true;
+    services.xserver.displayManager.gdm.wayland = true;
+  environment.sessionVariables = {
+    # keepassxc / QT apps will use xwayland by default - override
+    QT_QPA_PLATFORM = "wayland";
+    # Ensure Electron / "Ozone platform" apps enable using wayland in NixOS
+    NIXOS_OZONE_WL = "1";
+  };
     environment.gnome.excludePackages = (with pkgs;
       [
 
         gnome-tour
+        xterm
       ]) ++ (with pkgs.gnome; [
         cheese # webcam tool
-        gnome-music
-        gedit # text editor
+
+        #gedit # text editor
         #epiphany # web browser
         # email reader
         gnome-characters
-        tali # poker game
+        tali # poker gamesway
         iagno # go game
         hitori # sudoku game
         atomix # puzzle game
@@ -29,7 +37,7 @@
     # So gtk themes can be set
     programs.dconf.enable = true;
     services.dbus.packages = with pkgs; [ dconf ];
-
+ 
     hardware.opengl.driSupport = true;
     #hardware.steam-hardware.enable = true;
     #hardware.xpadneo.enable = true;
@@ -44,7 +52,7 @@
 
       ] ++ (if stdenv.isx86_64 then
         [
-          exa
+          eza
 
         ]
       else if stdenv.isAarch64 then
@@ -67,10 +75,10 @@
 # in
 # {
 #   imports = [
-#     ../mixins/mako.nix
-#     ../mixins/sway.nix
-#     ../mixins/wlsunset.nix
-#     ../mixins/i3status.nix
+#     # ../mixins/mako.nix
+#     # ../mixins/sway.nix
+#     # ../mixins/wlsunset.nix
+#     # ../mixins/i3status.nix
 #   ];
 #   config = {
 #     services.dbus.packages = with pkgs; [ dconf ];
@@ -89,13 +97,13 @@
 #     # The NixOS option 'programs.sway.enable' is needed to make swaylock work,
 #     # since home-manager can't set PAM up to allow unlocks, along with some
 #     # other quirks.
-#     programs.sway.enable = true;
+#     # programs.sway.enable = true;
 
 #     fonts.fonts = with pkgs; [ terminus_font_ttf font-awesome ];
 #     home-manager.users.kgosi= { pkgs, ... }: {
 
 #       # Block auto-sway reload, Sway crashes if allowed to reload this way.
-#       xdg.configFile."sway/config".onChange = lib.mkForce "";
+#       # xdg.configFile."sway/config".onChange = lib.mkForce "";
 
 #       home.sessionVariables = {
 #         SSH_ASKPASS="${bemenuAskpass}";
@@ -107,7 +115,7 @@
 #         QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 #         _JAVA_AWT_WM_NONREPARENTING = "1";
 #         XDG_SESSION_TYPE = "wayland";
-#         XDG_CURRENT_DESKTOP = "sway";
+#         XDG_CURRENT_DESKTOP = "hikari";
 #       };
 #       home.packages = with pkgs; [
 #         wl-clipboard
@@ -116,4 +124,4 @@
 #       ];
 #     };
 #   };
-# }
+#}

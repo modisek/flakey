@@ -9,38 +9,38 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
-  boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" "tpm_tis"];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/89b16419-4159-4c3d-ba81-1d5923bcc4f8";
       fsType = "btrfs";
-      options = [ "subvol=root" ];
+      options = [ "subvol=root" "compress=zstd" "noatime"];
     };
 
   fileSystems."/home" =
     { device = "/dev/disk/by-uuid/89b16419-4159-4c3d-ba81-1d5923bcc4f8";
       fsType = "btrfs";
-      options = [ "subvol=home" ];
+      options = [ "subvol=home" "compress=zstd" "noatime" ];
     };
 
   fileSystems."/nix" =
     { device = "/dev/disk/by-uuid/89b16419-4159-4c3d-ba81-1d5923bcc4f8";
       fsType = "btrfs";
-      options = [ "subvol=nix" ];
+      options = [ "subvol=nix"  "compress=zstd" "noatime"];
     };
 
   fileSystems."/persist" =
     { device = "/dev/disk/by-uuid/89b16419-4159-4c3d-ba81-1d5923bcc4f8";
       fsType = "btrfs";
-      options = [ "subvol=persist" ];
+      options = [ "subvol=persist"  "compress=zstd" "noatime"];
     };
 
   fileSystems."/var/log" =
     { device = "/dev/disk/by-uuid/89b16419-4159-4c3d-ba81-1d5923bcc4f8";
       fsType = "btrfs";
-      options = [ "subvol=log" ];
+      options = [ "subvol=log"  "compress=zstd" "noatime"];
     };
 
   fileSystems."/boot" =

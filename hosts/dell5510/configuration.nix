@@ -1,17 +1,16 @@
-{ config, pkgs, inputs, ... }: {
+{ config, pkgs, inputs, lib, ... }: {
   imports = with inputs.self.nixosModules; [
     ./disks.nix
     ./hardware-configuration.nix
     users-kgosi
     profiles-sway
-    profiles-steam
     profiles-pipewire
     mixins-zram
-    #mixins-i3status
+    # mixins-i3status
     mixins-fonts
-    mixins-bluetooth
-    mixins-v4l2loopback
-    mixins-vaapi-intel-hybrid-codec
+    #mixins-bluetooth
+    #mixins-v4l2loopback
+    # mixins-vaapi-intel-hybrid-codec
     mixins-obs
 
   ];
@@ -21,32 +20,15 @@
     [ "0 20 * * * root journalctl --vacuum-time=2d" ];
 
   systemd.coredump.enable = false;
-  security.chromiumSuidSandbox.enable = true;
-
-  # enable firejail
-  programs.firejail.enable = true;
-
-  # create system-wide executables firefox and chromium
-  # that will wrap the real binaries so everything
-  # work out of the box.
-  programs.firejail.wrappedBinaries = {
-    firefox = {
-      executable = "${pkgs.lib.getBin pkgs.firefox}/bin/firefox";
-      profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
-    };
-    chromium = {
-      executable = "${pkgs.lib.getBin pkgs.chromium}/bin/chromium";
-      profile = "${pkgs.firejail}/etc/firejail/chromium.profile";
-    };
-  };
-
   services.fwupd.enable = true;
   services.fstrim.enable = true;
+  services.tailscale.enable = true;
+  services.flatpak.enable = true;
 
-  boot.kernel.sysctl = {
-    "vm.swappiness" = 10;
-    "vm.dirty_ratio" = 6;
-  };
+  # boot.kernel.sysctl = {
+  #   "vm.swappiness" = 100;
+  #   "vm.dirty_ratio" = 6;
+  # };
 
   home-manager = {
     useGlobalPkgs = true;
@@ -60,31 +42,16 @@
 
   users.users.kgosi.extraGroups = [ "video" ];
 
-  nix = {
-    # From flake-utils-plus
-  };
-
   networking = {
     firewall = {
-      # Syncthing ports
-      allowedTCPPorts = [ 22000 ];
-      allowedUDPPorts = [ 21027 22000 ];
+      
+    };
+    wireless = {
+      iwd.enable = true;
     };
     hostName = "nomad";
     networkmanager.enable = true;
-
-    #useNetworkd = true;
-
-    #wireless = {
-    # userControlled.enable = true;
-    #enable = true;
-    #interfaces = [ "wlp3s0" ];
-    #};
-    #useDHCP = false;
-    #interfaces = {
-    # "enp0s31f6".useDHCP = true;
-    #"wlp3s0".useDHCP = true;
-    #};
+    networkmanager.wifi.backend = "iwd";
   };
 
   nix = {
@@ -95,22 +62,10 @@
   };
 
   programs.hyprland.enable = true;
-
-  services.syncthing.enable = true;
+  # programs.hikari.enable = true;
+services.openssh.settings.X11Forwarding = true;
   services.thermald.enable = true;
-  # tlp = {
-  #    enable = true;
-  #    settings = {
-  #      PCIE_ASPM_ON_BAT = "powersupersave";
-  #      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-  #      CPU_MAX_PERF_ON_AC = "100";
-  #      CPU_MAX_PERF_ON_BAT = "30";
-  #      STOP_CHARGE_THRESH_BAT1 = "95";
-  #      STOP_CHARGE_THRESH_BAT0 = "95";
-  #    };
-  #  };
-  #logind.killUserProcesses = true;
+services.gnome.gnome-keyring.enable = true;
 
   boot = {
     kernelParams = [
@@ -121,6 +76,11 @@
       "i915.enable_fbc=1"
       "i915.enable_dc=2"
       "mem_sleep_default=deep"
+      "quiet"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+      "boot.shell_on_fail"
     ];
     loader = {
       systemd-boot = {
@@ -130,6 +90,9 @@
       efi = { canTouchEfiVariables = true; };
     };
   };
+  boot.consoleLogLevel = 0;
+  boot.initrd.verbose = false;
+  boot.plymouth.enable = true;
 
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {
@@ -155,7 +118,17 @@
     };
     pulseaudio.enable = false;
   };
-  virtualisation.libvirtd.enable = true;
+
+  system.activationScripts = {
+    rfkillUnblockWlan = {
+      text = ''
+      rfkill unblock wlan
+      '';
+      deps = [];
+    };
+  };
+
+  virtualisation.libvirtd.enable = false;
   virtualisation.libvirtd.onBoot = "ignore";
   virtualisation.libvirtd.qemu.package = pkgs.qemu_full;
   virtualisation.libvirtd.qemu.ovmf.enable = true;
@@ -171,21 +144,24 @@
   virtualisation.docker.enable = true;
   virtualisation.docker.storageDriver = "btrfs";
 
-  boot.binfmt.emulatedSystems = [ "x86_64-linux" "i686-linux" ];
-  #services.flatpak.enable = true;
+  #boot.binfmt.emulatedSystems = [ "x86_64-linux" "i686-linux" ];
+
+  programs.firefox.enable = true;
+
+  security.tpm2.enable = true;
+  security.tpm2.tctiEnvironment.enable = true;
   environment.systemPackages = with pkgs; [
-    firefox
-    chromium
-    mpv
+
+    #mpv
     git
     stow
     neovim
-    virt-manager
+    #virt-manager
     tmux
     fzf
     zoxide
     curl
-    curlie
+    # curlie
     ffmpeg
     tig
     terraform
@@ -200,9 +176,47 @@
     pass
     gnupg
     powertop
-    ulauncher
+    # ulauncher
     wofi
-    iwgtk
+    bun
+    nvd
+    deno
+    waybar
+    caddy
+    pulumi-bin
+    pinentry-gnome
+    nickel
+    jetbrains.idea-community
+    jetbrains.jdk
+    dive
+    hikari
+    #process-compose
+    keepassxc
+    git-credential-keepassxc
+    gnomeExtensions.tailscale-qs
+    gnomeExtensions.tailscale-status
+    # glib_git
+    #lapce
+    #gns3-gui
+    #ciscoPacketTracer8
+    
+    pcmanfm
+  microsoft-edge-dev 
+   microsoft-edge 
+  gnomeExtensions.pano
+  distrobox
+  erlang
+  elixir
+
+   
+  ];
+
+  nix.settings.substituters = lib.mkDefault [
+    "https://nix-community.cachix.org"
+    "https://cache.nixos.org/"
+  ];
+  nix.settings.trusted-public-keys = lib.mkDefault [
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
   ];
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
 

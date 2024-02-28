@@ -13,6 +13,7 @@
       "kvm"
       "disk"
       "docker"
+      "video"
     ];
       };
 }
