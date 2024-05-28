@@ -167,10 +167,10 @@ services.gnome.gnome-keyring.enable = true;
     terraform
     awscli2
     helix
-    palemoon-bin
+    #palemoon-bin
     docker-compose
     spotify
-    anydesk
+    #anydesk
     nixfmt
     magic-wormhole-rs
     pass
@@ -186,8 +186,8 @@ services.gnome.gnome-keyring.enable = true;
     pulumi-bin
     pinentry-gnome
     nickel
-    jetbrains.idea-community
-    jetbrains.jdk
+    #jetbrains.idea-community
+    #jetbrains.jdk
     dive
     hikari
     #process-compose
@@ -201,8 +201,8 @@ services.gnome.gnome-keyring.enable = true;
     #ciscoPacketTracer8
     
     pcmanfm
-  microsoft-edge-dev 
-   microsoft-edge 
+  #microsoft-edge-dev 
+   #microsoft-edge 
   gnomeExtensions.pano
   distrobox
   erlang
@@ -220,6 +220,6 @@ services.gnome.gnome-keyring.enable = true;
   ];
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
 }
 

@@ -16,18 +16,16 @@
       ripgrep
       unzip
       nodejs
-      go
-      gopls
+      #go
+      #gopls
       python3
-      zig
-      rustc
-      cargo
+      #zig
       intel-gpu-tools
       yt-dlp
       htop
       libwebp
-      gnome-firmware
-      google-chrome
+      #gnome-firmware
+      #google-chrome
       #gnomeExtensions.user-themes
       gnomeExtensions.tray-icons-reloaded
       #gnomeExtensions.vitals
@@ -37,19 +35,22 @@
       #gnome.gnome-terminal
       gnomeExtensions.caffeine
       #gnomeExtensions.gsconnect
-      gimp
-      inkscape
-      libreoffice
-      transmission
-      jdk
-      rnix-lsp
-      blender
+      #gnomeExtensions.zen
+      #gnome4x ui inprovements
+      #gnome custom accent colors
+      #gimp
+      #inkscape
+      #libreoffice
+      #transmission
+      #jdk
+      #rnix-lsp
+      #blender
 
       # apps
 
       gnome.dconf-editor
       gnome-extension-manager
-      gradience
+      #gradience
 
       # useful utils
       nautilus-open-any-terminal
@@ -68,10 +69,7 @@
       # gnomeExtensions.smart-auto-move
       # gnomeExtensions.space-bar
       gnomeExtensions.dash-to-dock
-      cwm
-      dzen2
-      dmenu
-      feh
+    
       vaultwarden
 
 
@@ -382,5 +380,5 @@
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version
   # changes in each release.
-  home.stateVersion = "20.03";
+  home.stateVersion = "23.05";
 }
