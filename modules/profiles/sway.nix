@@ -7,6 +7,8 @@
     services.xserver.displayManager.autoLogin.enable = false;
     services.xserver.desktopManager.gnome.enable = true;
     services.xserver.displayManager.gdm.wayland = true;
+    services.desktopManager.cosmic.enable = true;
+    services.displayManager.cosmic-greeter.enable = false;
   environment.sessionVariables = {
     # keepassxc / QT apps will use xwayland by default - override
     QT_QPA_PLATFORM = "wayland";
@@ -37,7 +39,7 @@
     # So gtk themes can be set
     programs.dconf.enable = true;
     services.dbus.packages = with pkgs; [ dconf ];
- 
+
     hardware.opengl.driSupport = true;
     #hardware.steam-hardware.enable = true;
     #hardware.xpadneo.enable = true;

@@ -8,14 +8,16 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-   
+
+    nixos-cosmic = {
+      url = "github:lilyinstarlight/nixos-cosmic";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
-    { self
-    , home-manager,
-  
-     nixpkgs,
+    { self, home-manager, nixos-cosmic, nixpkgs,
     # chaotic
     # ,
      ...
@@ -25,9 +27,16 @@
         dell5510 = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+          {
+                    nix.settings = {
+                      substituters = [ "https://cosmic.cachix.org/" ];
+                      trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+                    };
+                  }
             ./hosts/dell5510/configuration.nix
             home-manager.nixosModules.home-manager
-           
+            nixos-cosmic.nixosModules.default
+
             # chaotic.nixosModules.default
 
              ({ pkgs, lib, ... }: {
@@ -41,16 +50,16 @@
             # This setting is usually set to true in configuration.nix
             # generated at installation time. So we force it to false
             # for now.
-            
 
-           
+
+
           })
-       
+
           ];
           specialArgs = { inherit inputs; };
         };
-     
-       
+
+
       };
     };
 }
