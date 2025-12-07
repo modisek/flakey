@@ -7,8 +7,8 @@
     services.xserver.displayManager.autoLogin.enable = false;
     services.xserver.desktopManager.gnome.enable = true;
     services.xserver.displayManager.gdm.wayland = true;
-    services.desktopManager.cosmic.enable = true;
-    services.displayManager.cosmic-greeter.enable = false;
+    # services.desktopManager.cosmic.enable = true;
+    # services.displayManager.cosmic-greeter.enable = false;
   environment.sessionVariables = {
     # keepassxc / QT apps will use xwayland by default - override
     QT_QPA_PLATFORM = "wayland";

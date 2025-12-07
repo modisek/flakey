@@ -59,6 +59,36 @@
           specialArgs = { inherit inputs; };
         };
 
+        lenovo = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+
+            ./hosts/lenovo/configuration.nix
+            home-manager.nixosModules.home-manager
+           # nixos-cosmic.nixosModules.default
+
+            # chaotic.nixosModules.default
+
+             ({ pkgs, lib, ... }: {
+
+            environment.systemPackages = [
+              # For debugging and troubleshooting Secure Boot.
+              #pkgs.sbctl
+            ];
+
+            # Lanzaboote currently replaces the systemd-boot module.
+            # This setting is usually set to true in configuration.nix
+            # generated at installation time. So we force it to false
+            # for now.
+
+
+
+          })
+
+          ];
+          specialArgs = { inherit inputs; };
+        };
+
 
       };
     };
