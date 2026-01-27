@@ -9,51 +9,54 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-cosmic = {
-      url = "github:lilyinstarlight/nixos-cosmic";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+    zen-browser.inputs.home-manager.follows = "home-manager";
+    cursor.url = "github:TudorAndrei/cursor-nixos-flake";
 
   };
 
   outputs =
-    { self, home-manager, nixos-cosmic, nixpkgs,
-    # chaotic
-    # ,
-     ...
-    } @ inputs: {
+    {
+      self,
+      home-manager,
+      nixpkgs,
+      determinate,
+      zen-browser,
+      cursor,
+      ...
+    }@inputs:
+    {
       nixosModules = import ./modules { lib = nixpkgs.lib; };
-            nixosConfigurations = {
+      nixosConfigurations = {
         dell5510 = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-          {
-                    nix.settings = {
-                      substituters = [ "https://cosmic.cachix.org/" ];
-                      trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
-                    };
-                  }
+
             ./hosts/dell5510/configuration.nix
             home-manager.nixosModules.home-manager
-            nixos-cosmic.nixosModules.default
 
             # chaotic.nixosModules.default
 
-             ({ pkgs, lib, ... }: {
+            (
+              { pkgs, lib, ... }:
+              {
 
-            environment.systemPackages = [
-              # For debugging and troubleshooting Secure Boot.
-              #pkgs.sbctl
-            ];
+                environment.systemPackages = [
+                  # For debugging and troubleshooting Secure Boot.
+                  #pkgs.sbctl
 
-            # Lanzaboote currently replaces the systemd-boot module.
-            # This setting is usually set to true in configuration.nix
-            # generated at installation time. So we force it to false
-            # for now.
+                ];
 
+                # Lanzaboote currently replaces the systemd-boot module.
+                # This setting is usually set to true in configuration.nix
+                # generated at installation time. So we force it to false
+                # for now.
 
-
-          })
+              }
+            )
 
           ];
           specialArgs = { inherit inputs; };
@@ -65,30 +68,78 @@
 
             ./hosts/lenovo/configuration.nix
             home-manager.nixosModules.home-manager
-           # nixos-cosmic.nixosModules.default
+            # nixos-cosmic.nixosModules.default
+            determinate.nixosModules.default
 
             # chaotic.nixosModules.default
 
-             ({ pkgs, lib, ... }: {
+            (
+              { pkgs, lib, ... }:
+              {
 
-            environment.systemPackages = [
-              # For debugging and troubleshooting Secure Boot.
-              #pkgs.sbctl
-            ];
+                environment.systemPackages = [
+                  # For debugging and troubleshooting Secure Boot.
+                  #pkgs.sbctl
+                  cursor.packages.x86_64-linux.cursor
+                ];
 
-            # Lanzaboote currently replaces the systemd-boot module.
-            # This setting is usually set to true in configuration.nix
-            # generated at installation time. So we force it to false
-            # for now.
+                # Lanzaboote currently replaces the systemd-boot module.
+                # This setting is usually set to true in configuration.nix
+                # generated at installation time. So we force it to false
+                # for now.
+
+                specialisation = {
+
+                  cosmic = {
+                    configuration = {
+                      system.nixos.tags = [ "cosmic" ];
+                      services.desktopManager.gnome.enable = lib.mkForce false;
+                      services.desktopManager.plasma6.enable = lib.mkForce false;
+                      services.desktopManager.cosmic.enable = true;
+                    };
+                  };
+
+                  kde = {
+                    # inheritParentConfig = false;
+                    configuration = {
+                      system.nixos.tags = [ "kde" ];
+                      services.desktopManager.gnome.enable = lib.mkForce false;
+                      services.desktopManager.plasma6.enable = true;
+                      # services.displayManager.plasma-login.enable = true;
+                      # services.displayManager.gdm.enable = lib.mkForce false;
+
+                      environment.sessionVariables = {
+                        KWIN_USE_OVERLAYS = "1";
+                      };
+                      environment.systemPackages = with pkgs; [
+                      ];
+                    };
+                  };
+
+                  hyprland = {
+                    configuration = {
+                      system.nixos.tags = [ "hyprland" ];
+                      imports = with inputs.self.nixosModules; [
+                        profiles-hyprland
+                        mixins-systemd_networkd
+                        mixins-fonts
+                        mixins-common_packages
+                      ];
 
 
+                      home-manager.users.kgosi = { ... }: {
+                        programs.hyprland.enable = true;
+                      };
+                    };
+                  };
+                };
 
-          })
+              }
+            )
 
           ];
           specialArgs = { inherit inputs; };
         };
-
 
       };
     };

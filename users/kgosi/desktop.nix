@@ -2,6 +2,7 @@
   imports = [
     #./modules/nnn.nix
     ./modules/kitty.nix
+    ./modules/hyprland.nix
   ];
   home = {
     packages = with pkgs;

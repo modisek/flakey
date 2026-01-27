@@ -9,11 +9,11 @@
     jetbrains-mono
     powerline-fonts
     gelasio
-    nerdfonts
+   
     iosevka
     noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
+    
+    noto-fonts-color-emoji
     source-code-pro
     ttf_bitstream_vera
     terminus_font_ttf

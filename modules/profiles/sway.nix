@@ -2,11 +2,11 @@
 
 {
   config = {
-    services.xserver.enable = true;
-    services.xserver.displayManager.gdm.enable = true;
-    services.xserver.displayManager.autoLogin.enable = false;
-    services.xserver.desktopManager.gnome.enable = true;
-    services.xserver.displayManager.gdm.wayland = true;
+    # services.xserver.enable = true;
+    services.displayManager.gdm.enable = true;
+    services.displayManager.autoLogin.enable = false;
+    services.desktopManager.gnome.enable = true;
+    services.displayManager.gdm.wayland = true;
     # services.desktopManager.cosmic.enable = true;
     # services.displayManager.cosmic-greeter.enable = false;
   environment.sessionVariables = {
@@ -20,7 +20,7 @@
 
         gnome-tour
         xterm
-      ]) ++ (with pkgs.gnome; [
+      ]) ++ (with pkgs; [
         cheese # webcam tool
 
         #gedit # text editor
@@ -40,7 +40,7 @@
     programs.dconf.enable = true;
     services.dbus.packages = with pkgs; [ dconf ];
 
-    hardware.opengl.driSupport = true;
+    
     #hardware.steam-hardware.enable = true;
     #hardware.xpadneo.enable = true;
 
@@ -50,7 +50,7 @@
     environment.systemPackages = with pkgs;
       [
 
-        gnome.gnome-tweaks
+        gnome-tweaks
 
       ] ++ (if stdenv.isx86_64 then
         [

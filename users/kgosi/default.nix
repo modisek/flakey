@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   # If we aren't headless, then load ./desktop.nix
@@ -7,7 +13,15 @@
   # refactor.
   # https://discourse.nixos.org/t/conditionally-import-module-if-it-exists/17832/2
   # https://github.com/jonringer/nixpkgs-config/blob/cc2958b5e0c8147849c66b40b55bf27ff70c96de/flake.nix#L47-L82
-  imports = [ ./desktop.nix ];
+  imports = [
+    ./desktop.nix
+    inputs.zen-browser.homeModules.twilight
+  ];
+
+  # inputs.vicinae-extensions = {
+  #   url = "github:vicinaehq/extensions";
+  #   inputs.nixpkgs.follows = "nixpkgs";
+  # };
 
   home = {
     username = "kgosi";
@@ -47,8 +61,8 @@
       #blender
 
       # apps
-
-      gnome.dconf-editor
+      bibata-cursors
+      dconf-editor
       gnome-extension-manager
       #gradience
 
@@ -69,17 +83,28 @@
       # gnomeExtensions.smart-auto-move
       # gnomeExtensions.space-bar
       gnomeExtensions.dash-to-dock
-    
-      vaultwarden
-
 
     ];
   };
-  programs.fzf = { enable = true; };
-  programs.zoxide = { enable = true; };
+
+  programs.zen-browser = {
+    enable = true;
+    # any other options under `programs.firefox` are also supported here.
+    # see `man home-configuration.nix`.
+  };
+
+  programs.fzf = {
+    enable = true;
+  };
+  programs.zoxide = {
+    enable = true;
+  };
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+  services.lorri = {
+    enable = true;
   };
   home.file.".tmux.conf".source = ../../files/tmux.conf;
   programs = {
@@ -153,19 +178,17 @@
       toolkit-accessibility = false;
     };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
-      {
-        binding = "<Super>Return";
-        command = "kgx";
-        name = "Open Terminal";
-      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<Super>Return";
+      command = "kgx";
+      name = "Open Terminal";
+    };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" =
-      {
-        binding = "<Control><Alt>Delete";
-        command = "systemctl hibernate";
-        name = "Hibernate";
-      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+      binding = "<Control><Alt>Delete";
+      command = "systemctl hibernate";
+      name = "Hibernate";
+    };
 
     "org/gnome/settings-daemon/plugins/power" = {
       power-button-action = "hibernate";
@@ -229,10 +252,6 @@
       workspaces-in-app-grid = true;
     };
 
-
-
-
-
     "org/gnome/shell/extensions/search-light" = {
 
       blur-background = true;
@@ -271,7 +290,9 @@
       num-workspaces = 5;
     };
 
-    "org/gnome/desktop/notifications" = { show-in-lock-screen = false; };
+    "org/gnome/desktop/notifications" = {
+      show-in-lock-screen = false;
+    };
     "org/gnome/desktop/peripherals/touchpad" = {
       tap-to-click = true;
       two-finger-scrolling-enabled = false;
@@ -338,47 +359,11 @@
 
   };
 
- 
-
   programs.vscode = {
     enable = true;
     package = pkgs.vscode;
-   
-    extensions = with pkgs.vscode-extensions;
-      [
-        bbenoist.nix
-        ms-vscode-remote.remote-ssh
-        github.vscode-pull-request-github
-        editorconfig.editorconfig
-        matklad.rust-analyzer
-        mkhl.direnv
-        jock.svg
-        usernamehw.errorlens
-        vadimcn.vscode-lldb
-        bungcip.better-toml
 
-      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-
-        {
-          name = "todo-tree";
-          publisher = "Gruntfuggly";
-          version = "0.0.215";
-          sha256 = "sha256-WK9J6TvmMCLoqeKWh5FVp1mNAXPWVmRvi/iFuLWMylM=";
-        }
-      ] ++ (if pkgs.stdenv.isx86_64 then
-        with pkgs.vscode-extensions; [ ms-python.python ]
-      else
-        [ ]);
   };
-  #home.sessionVariables.GTK_THEME = "palenight";
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
   home.stateVersion = "23.05";
 }
