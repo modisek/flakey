@@ -3,10 +3,10 @@
   services.psd.enable = true;
 
   # Bpftune
-  services.bpftune.enable = true;
+  # services.bpftune.enable = true;
 
   # Sched-ext (SCX_EXT)
-  services.sched-ext = {
+  services.scx = {
     enable = true;
     scheduler = "scx_lavd";
   };
