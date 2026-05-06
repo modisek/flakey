@@ -42,14 +42,8 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_cachyos;
+    kernelPackages = pkgs.linuxPackages_testing;
     kernelParams = [
-      "i915.modeset=1"
-      "i915.fastboot=1"
-      "i915.enable_guc=2"
-      "i915.enable_psr=1"
-      "i915.enable_fbc=1"
-      "i915.enable_dc=2"
       "mem_sleep_default=deep"
       "quiet"
       "rd.systemd.show_status=false"
