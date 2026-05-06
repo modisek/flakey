@@ -13,4 +13,4 @@ jobs:
             experimental-features = nix-command flakes
       - name: Build System Configuration
         run: |
-          nix build .#nixosConfigurations.dell5510.config.system.build.toplevel
+          nix build .#nixosConfigurations.dell5510.config.system.build.toplevel --extra-experimental-features "nix-command flakes"
