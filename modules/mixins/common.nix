@@ -4,7 +4,7 @@
 
   systemd.coredump.enable = false;
   services.fwupd.enable = true;
-  services.fstrim.enable = true;
+  #services.fstrim.enable = true;
   services.tailscale.enable = true;
   services.flatpak.enable = true;
 
@@ -12,13 +12,14 @@
   #   "vm.swappiness" = 99;
   #   "vm.dirty_ratio" = 5;
   # };
- 
+
   nix = {
 
     gc.automatic = true;
     gc.dates = "weekly";
     gc.options = "--delete-older-than 60d";
   };
+
   services.thermald.enable = true;
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {

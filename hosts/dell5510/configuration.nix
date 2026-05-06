@@ -2,7 +2,6 @@
   imports = with inputs.self.nixosModules; [
     ./disk-config.nix
     ./hardware-configuration.nix
-    <nix-hardware/dell/latitude/5510>
     users-kgosi
     profiles-sway
     profiles-pipewire
@@ -16,7 +15,7 @@
 
   ];
 
- 
+
 
   home-manager = {
     useGlobalPkgs = true;
@@ -32,7 +31,7 @@
 
   networking = {
     firewall = {
-      
+
     };
     wireless = {
       iwd.enable = true;
@@ -66,7 +65,7 @@
       efi = { canTouchEfiVariables = true; };
     };
   };
-  
+
   services.udev.extraRules = ''
     ACTION=="add|change", KERNEL=="sd[a-z]*|nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="mq-deadline"
   '';
@@ -74,7 +73,7 @@
   boot.initrd.verbose = false;
   boot.plymouth.enable = true;
 
-  
+
   hardware = {
     opengl = {
       driSupport = true;
@@ -129,4 +128,3 @@
 
   system.stateVersion = "23.05";
 }
-

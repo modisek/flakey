@@ -3,7 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nix-hardware.url = "github:NixOS/nix-hardware";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
     # chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -28,7 +29,7 @@
       self,
       home-manager,
       nixpkgs,
-      nix-hardware,
+      nixos-hardware,
       determinate,
       disko,
       zen-browser,
@@ -45,6 +46,7 @@
         disko.nixosModules.disko
         ./hosts/dell5510/configuration.nix
         home-manager.nixosModules.home-manager
+        nixos-hardware.nixosModules.latitude-5510
       ];
     };
 
