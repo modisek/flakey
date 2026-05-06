@@ -24,13 +24,10 @@
     nickel
     dive
     gnomeExtensions.tailscale-qs
-    gnomeExtensions.tailscale-status
-    gnomeExtensions.pano
     distrobox
     erlang
     elixir
     go
     gopls
-    tail-tray
   ];
 }

@@ -1,7 +1,8 @@
 { config, pkgs, inputs, lib, ... }: {
   imports = with inputs.self.nixosModules; [
-    ./disks.nix
+    ./disk-config.nix
     ./hardware-configuration.nix
+    <nix-hardware/dell/latitude/5510>
     users-kgosi
     profiles-sway
     profiles-pipewire
@@ -11,6 +12,7 @@
     mixins-virtualization
     mixins-common_packages
     mixins-common
+    mixins-services
 
   ];
 
@@ -41,6 +43,7 @@
   };
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_cachyos;
     kernelParams = [
       "i915.modeset=1"
       "i915.fastboot=1"
@@ -63,6 +66,10 @@
       efi = { canTouchEfiVariables = true; };
     };
   };
+  
+  services.udev.extraRules = ''
+    ACTION=="add|change", KERNEL=="sd[a-z]*|nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="mq-deadline"
+  '';
   boot.consoleLogLevel = 0;
   boot.initrd.verbose = false;
   boot.plymouth.enable = true;

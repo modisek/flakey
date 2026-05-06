@@ -15,6 +15,7 @@
   # https://github.com/jonringer/nixpkgs-config/blob/cc2958b5e0c8147849c66b40b55bf27ff70c96de/flake.nix#L47-L82
   imports = [
     ./desktop.nix
+    ./modules/easy-effects
     inputs.zen-browser.homeModules.twilight
   ];
 

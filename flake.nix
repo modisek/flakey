@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nix-hardware.url = "github:NixOS/nix-hardware/master";
     # chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -10,6 +11,10 @@
     };
 
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
@@ -23,7 +28,9 @@
       self,
       home-manager,
       nixpkgs,
+      nix-hardware,
       determinate,
+      disko,
       zen-browser,
       cursor,
       ...
@@ -31,36 +38,15 @@
     {
       nixosModules = import ./modules { lib = nixpkgs.lib; };
       nixosConfigurations = {
-        dell5510 = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-
-            ./hosts/dell5510/configuration.nix
-            home-manager.nixosModules.home-manager
-
-            # chaotic.nixosModules.default
-
-            (
-              { pkgs, lib, ... }:
-              {
-
-                environment.systemPackages = [
-                  # For debugging and troubleshooting Secure Boot.
-                  #pkgs.sbctl
-
-                ];
-
-                # Lanzaboote currently replaces the systemd-boot module.
-                # This setting is usually set to true in configuration.nix
-                # generated at installation time. So we force it to false
-                # for now.
-
-              }
-            )
-
-          ];
-          specialArgs = { inherit inputs; };
-        };
+    dell5510 = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
+      modules = [
+        disko.nixosModules.disko
+        ./hosts/dell5510/configuration.nix
+        home-manager.nixosModules.home-manager
+      ];
+    };
 
         lenovo = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
