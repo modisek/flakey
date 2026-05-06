@@ -1,7 +1,7 @@
 { config, pkgs, inputs, lib, ... }: {
   imports = with inputs.self.nixosModules; [
     ./disk-config.nix
-    ./hardware-configuration.nix
+    # ./hardware-configuration.nix
     users-kgosi
     profiles-sway
     profiles-pipewire

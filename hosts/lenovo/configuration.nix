@@ -7,7 +7,7 @@
 }:
 {
   imports = with inputs.self.nixosModules; [
-    ./hardware-configuration.nix
+    # ./hardware-configuration.nix
     users-kgosi
     profiles-sway
     profiles-pipewire
