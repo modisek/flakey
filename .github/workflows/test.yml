@@ -12,5 +12,7 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
       - name: Build System Configuration
+        env:
+          NIXPKGS_ALLOW_UNFREE: "1"
         run: |
-          nix build .#nixosConfigurations.dell5510.config.system.build.toplevel --extra-experimental-features "nix-command flakes"
+          nix build .#nixosConfigurations.dell5510.config.system.build.toplevel --impure --extra-experimental-features "nix-command flakes"
