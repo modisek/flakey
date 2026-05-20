@@ -3,7 +3,7 @@
     ./disk-config.nix
     # ./hardware-configuration.nix
     users-kgosi
-    profiles-sway
+    profiles-gnome
     profiles-pipewire
     mixins-zram
     mixins-fonts
@@ -27,11 +27,11 @@
     };
   };
 
-  users.users.kgosi.extraGroups = [ "video" ];
+  users.users.kgosi.extraGroups = [ "video" "render" ];
 
   networking = {
     firewall = {
-
+      enable = true;
     };
     wireless = {
       iwd.enable = true;
@@ -42,14 +42,15 @@
   };
 
   boot = {
+    initrd.systemd.enable = true;
     kernelPackages = pkgs.linuxPackages_testing;
     kernelParams = [
+      "i915.enable_guc=3"
       "mem_sleep_default=deep"
       "quiet"
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
-      "boot.shell_on_fail"
     ];
     loader = {
       systemd-boot = {
@@ -58,36 +59,38 @@
       };
       efi = { canTouchEfiVariables = true; };
     };
+    supportedFilesystems = [ "btrfs" "ntfs" ];
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    plymouth.enable = true;
   };
+  hardware.enableAllFirmware = true;
+  nixpkgs.config.allowUnfree = true;
 
   services.udev.extraRules = ''
     ACTION=="add|change", KERNEL=="sd[a-z]*|nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="mq-deadline"
   '';
-  boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
-  boot.plymouth.enable = true;
 
-
-  hardware = {
-    opengl = {
-      enable = true;
-      extraPackages = with pkgs; [
-        intel-media-driver # LIBVA_DRIVER_NAME=iHD
-        intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-
-      ];
-    };
-    trackpoint = {
-      enable = true;
-      sensitivity = 255;
-    };
-    pulseaudio.enable = false;
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-compute-runtime
+      intel-media-driver
+      intel-vaapi-driver
+    ];
   };
+
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama;
+  };
+
+  services.pulseaudio.enable = false;
 
   system.activationScripts = {
     rfkillUnblockWlan = {
       text = ''
-      rfkill unblock wlan
+        rfkill unblock wlan
       '';
       deps = [];
     };
@@ -97,7 +100,18 @@
 
   security.tpm2.enable = true;
   security.tpm2.tctiEnvironment.enable = true;
+
   environment.systemPackages = with pkgs; [
+    clinfo
+    intel-gpu-tools
+    openvino
+    (python3.withPackages (ps: with ps; [
+      optimum-intel
+      openvino-telemetry
+      numpy
+      pip
+      virtualenv
+    ]))
     docker-compose
     spotify
     caddy
@@ -108,7 +122,12 @@
     waybar
     nvd
     pcmanfm
+    ollama-cuda
   ];
+
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  };
 
   nix.settings.substituters = lib.mkDefault [
     "https://nix-community.cachix.org"
@@ -119,5 +138,5 @@
   ];
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.11";
 }

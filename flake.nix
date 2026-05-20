@@ -52,8 +52,9 @@
 
         lenovo = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
           modules = [
-
+            disko.nixosModules.disko
             ./hosts/lenovo/configuration.nix
             home-manager.nixosModules.home-manager
             # nixos-cosmic.nixosModules.default
@@ -126,7 +127,6 @@
             )
 
           ];
-          specialArgs = { inherit inputs; };
         };
 
       };

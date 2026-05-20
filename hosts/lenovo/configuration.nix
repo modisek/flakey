@@ -7,21 +7,17 @@
 }:
 {
   imports = with inputs.self.nixosModules; [
-    # ./hardware-configuration.nix
+    ./disk-config.nix
     users-kgosi
-    profiles-sway
+    profiles-gnome
     profiles-pipewire
     mixins-zram
-    # mixins-i3status
     mixins-fonts
-    #mixins-bluetooth
-    #mixins-v4l2loopback
-    # mixins-vaapi-intel-hybrid-codec
     mixins-obs
     mixins-virtualization
     mixins-common_packages
     mixins-common
-
+    mixins-services
   ];
 
   home-manager = {
@@ -50,9 +46,9 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.linuxPackages_testing;
   boot = {
+    kernelPackages = pkgs.linuxPackages_testing;
+    initrd.systemd.enable = true;
     kernelParams = [
       "i915.modeset=1"
       "i915.fastboot=1"
@@ -65,7 +61,6 @@
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
-      "boot.shell_on_fail"
       "intel_pstate=passive"
       "pcie_aspm=force"
       "scsi_mod.use_blk_mq=1"
@@ -79,13 +74,10 @@
         canTouchEfiVariables = true;
       };
     };
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    plymouth.enable = true;
   };
-  boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
-  boot.plymouth.enable = true;
-
-  boot.initrd.luks.devices."luks-3011b93d-b77f-4bfd-9bce-e017cd20ee87".device =
-    "/dev/disk/by-uuid/3011b93d-b77f-4bfd-9bce-e017cd20ee87";
 
   hardware = {
     graphics = {
@@ -138,5 +130,5 @@
     "nix-command"
   ];
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.11";
 }
